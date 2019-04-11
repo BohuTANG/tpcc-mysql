@@ -1,4 +1,5 @@
 1. Build binaries
+   * apt install libmysqlclient-dev
    * `cd src ; make`
    ( you should have mysql_config available in $PATH)
 
