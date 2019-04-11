@@ -478,13 +478,13 @@ int payment( int t_num,
 		if( mysql_stmt_execute(mysql_stmt) ) goto sqlerr;
 	}
 	strncpy(h_data, w_name, 10);
-	h_data[10] = '\0';
+	h_data[10] = ' ';
 	strncat(h_data, d_name, 10);
 	h_data[20] = ' ';
 	h_data[21] = ' ';
 	h_data[22] = ' ';
 	h_data[23] = ' ';
-	h_data[24] = '\0';
+	h_data[24] = ' ';
 
 	proceed = 10;
 	/*EXEC_SQL INSERT INTO history(h_c_d_id, h_c_w_id, h_c_id, h_d_id,
