@@ -588,7 +588,6 @@ Stock(w_id)
 
 	/* EXEC SQL WHENEVER SQLERROR GOTO sqlerr;*/
 	printf("Loading Stock Wid=%ld\n", w_id);
-	mysql_query(mysql, "BEGIN");
 	s_w_id = w_id;
 
 	for (i = 0; i < MAXITEMS / 10; i++)
@@ -732,7 +731,6 @@ District(w_id)
 	/* EXEC SQL WHENEVER SQLERROR GOTO sqlerr;*/
 
 	printf("Loading District\n");
-	mysql_query(mysql, "BEGIN");
 	d_w_id = w_id;
 	d_ytd = 30000.0;
 	d_next_o_id = 3001L;
@@ -839,7 +837,6 @@ Customer(d_id, w_id)
 	/*EXEC SQL WHENEVER SQLERROR GOTO sqlerr;*/
 
 	printf("Loading Customer for DID=%ld, WID=%ld\n", d_id, w_id);
-	mysql_query(mysql, "BEGIN");
 
 retry:
     if (retried)
@@ -984,7 +981,7 @@ retry:
 		}
 	}
 	/* EXEC SQL COMMIT WORK; */
-	if( mysql_commit(mysql) ) goto sqlerr;
+	//if( mysql_commit(mysql) ) goto sqlerr;
 	printf("Customer Done.\n");
 
 	return;
@@ -1026,7 +1023,6 @@ Orders(d_id, w_id)
 	/* EXEC SQL WHENEVER SQLERROR GOTO sqlerr; */
 
 	printf("Loading Orders for D=%ld, W= %ld\n", d_id, w_id);
-	mysql_query(mysql, "BEGIN");
 	o_d_id = d_id;
 	o_w_id = w_id;
 retry:
@@ -1203,7 +1199,7 @@ retry:
 		}
 	}
 	/*EXEC SQL COMMIT WORK;*/
-	if( mysql_commit(mysql) ) goto sqlerr;
+	//if( mysql_commit(mysql) ) goto sqlerr;
 
 	printf("Orders Done.\n");
 	return;
