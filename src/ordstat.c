@@ -54,7 +54,7 @@ int ordstat( int t_num,
 
 	/*EXEC SQL WHENEVER NOT FOUND GOTO sqlerr;*/
 	/*EXEC SQL WHENEVER SQLERROR GOTO sqlerr;*/
-
+    mysql_query(ctx[t_num],"BEGIN");
 	if (byname) {
 		strcpy(c_last, c_last_arg);
 		proceed = 1;

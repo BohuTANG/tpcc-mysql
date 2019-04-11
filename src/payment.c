@@ -77,6 +77,7 @@ int payment( int t_num,
         MYSQL_BIND    param[8];
         MYSQL_BIND    column[14];
 
+    mysql_query(ctx[t_num],"BEGIN");
 	/* EXEC SQL WHENEVER NOT FOUND GOTO sqlerr; */
 	/* EXEC SQL WHENEVER SQLERROR GOTO sqlerr; */
 

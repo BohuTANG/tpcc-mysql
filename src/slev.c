@@ -40,7 +40,7 @@ int slev( int t_num,
 
 	/*EXEC SQL WHENEVER NOT FOUND GOTO sqlerr;*/
 	/*EXEC SQL WHENEVER SQLERROR GOTO sqlerr;*/
-
+    mysql_query(ctx[t_num],"BEGIN");
 	/* find the next order id */
 #ifdef DEBUG
 	printf("select 1\n");

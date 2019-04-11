@@ -109,6 +109,7 @@ int neword( int t_num,
 
 	/*EXEC SQL CONTEXT USE :ctx[t_num];*/
 
+    mysql_query(ctx[t_num],"BEGIN");
         gettimestamp(datetime, STRFTIME_FORMAT, TIMESTAMP_LEN);
 	clk_start = clock_gettime(CLOCK_REALTIME, &tbuf_start );
 

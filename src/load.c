@@ -203,7 +203,7 @@ main(argc, argv)
 	}
 
 	if(resp) {
-	    mysql_autocommit(mysql, 0);
+	    //mysql_autocommit(mysql, 0);
 	    mysql_query(mysql, "SET UNIQUE_CHECKS=0");
 	    mysql_query(mysql, "SET FOREIGN_KEY_CHECKS=0");
 	} else {
@@ -215,45 +215,27 @@ main(argc, argv)
 	    if(!stmt[i]) goto Error_SqlCall_close;
 	}
 
-	if( mysql_stmt_prepare(stmt[0],
-			       "INSERT INTO item values(?,?,?,?,?)",
-			       34) ) goto Error_SqlCall_close;
-	if( mysql_stmt_prepare(stmt[1],
-			       "INSERT INTO warehouse values(?,?,?,?,?,?,?,?,?)",
-			       47) ) goto Error_SqlCall_close;
-	if( mysql_stmt_prepare(stmt[2],
-			       "INSERT INTO stock values(?,?,?,?,?,?,?,?,?,?,?,?,?,0,0,0,?)",
-			       59) ) goto Error_SqlCall_close;
-	if( mysql_stmt_prepare(stmt[3],
-			       "INSERT INTO district values(?,?,?,?,?,?,?,?,?,?,?)",
-			       50) ) goto Error_SqlCall_close;
-	if( mysql_stmt_prepare(stmt[4],
-			       "INSERT INTO customer values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, 10.0, 1, 0,?)",
-			       76) ) goto Error_SqlCall_close;
-	if( mysql_stmt_prepare(stmt[5],
-			       "INSERT INTO history values(?,?,?,?,?,?,?,?)",
-			       43) ) goto Error_SqlCall_close;
-	if( mysql_stmt_prepare(stmt[6],
-			       "INSERT INTO orders values(?,?,?,?,?,NULL,?, 1)",
-			       46) ) goto Error_SqlCall_close;
-	if( mysql_stmt_prepare(stmt[7],
-			       "INSERT INTO new_orders values(?,?,?)",
-			       36) ) goto Error_SqlCall_close;
-	if( mysql_stmt_prepare(stmt[8],
-			       "INSERT INTO orders values(?,?,?,?,?,?,?, 1)",
-			       43) ) goto Error_SqlCall_close;
-	if( mysql_stmt_prepare(stmt[9],
-			       "INSERT INTO order_line values(?,?,?,?,?,?, NULL,?,?,?)",
-			       54) ) goto Error_SqlCall_close;
-	if( mysql_stmt_prepare(stmt[10],
-			       "INSERT INTO order_line values(?,?,?,?,?,?,?,?,?,?)",
-			       50) ) goto Error_SqlCall_close;
-
-
+    char *qs[] = {
+       "INSERT INTO item(i_id, i_im_id, i_name, i_price, i_data) values(?,?,?,?,?)",
+       "INSERT INTO warehouse(w_id, w_name, w_street_1, w_street_2, w_city, w_state, w_zip, w_tax, w_ytd) values(?,?,?,?,?,?,?,?,?)",
+       "INSERT INTO stock(s_i_id, s_w_id, s_quantity, s_dist_01, s_dist_02, s_dist_03, s_dist_04, s_dist_05, s_dist_06, s_dist_07, s_dist_08, s_dist_09, s_dist_10, s_ytd, s_order_cnt, s_remote_cnt, s_data) values(?,?,?,?,?,?,?,?,?,?,?,?,?,0,0,0,?)",
+       "INSERT INTO district(d_id, d_w_id, d_name, d_street_1, d_street_2, d_city, d_state, d_zip, d_tax, d_ytd, d_next_o_id) values(?,?,?,?,?,?,?,?,?,?,?)",
+       "INSERT INTO customer(c_id, c_d_id, c_w_id, c_first, c_middle, c_last, c_street_1, c_street_2, c_city, c_state, c_zip, c_phone, c_since, c_credit, c_credit_lim, c_discount, c_balance, c_ytd_payment, c_payment_cnt, c_delivery_cnt, c_data) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, 10.0, 1, 0,?)",
+       "INSERT INTO history(h_c_id, h_c_d_id, h_c_w_id, h_d_id, h_w_id, h_date, h_amount, h_data) values(?,?,?,?,?,?,?,?)",
+       "INSERT INTO orders(o_id, o_d_id, o_w_id, o_c_id, o_entry_d, o_carrier_id, o_ol_cnt, o_all_local) values(?,?,?,?,?,NULL,?, 1)",
+       "INSERT INTO new_orders(no_o_id, no_d_id, no_w_id) values(?,?,?)",
+       "INSERT INTO orders(o_id, o_d_id, o_w_id, o_c_id, o_entry_d, o_carrier_id, o_ol_cnt, o_all_local) values(?,?,?,?,?,?,?, 1)",
+       "INSERT INTO order_line(ol_o_id, ol_d_id, ol_w_id, ol_number, ol_i_id, ol_supply_w_id, ol_delivery_d, ol_quantity, ol_amount, ol_dist_info ) values(?,?,?,?,?,?, NULL,?,?,?)",
+       "INSERT INTO order_line(ol_o_id, ol_d_id, ol_w_id, ol_number, ol_i_id, ol_supply_w_id, ol_delivery_d, ol_quantity, ol_amount, ol_dist_info ) values(?,?,?,?,?,?,?,?,?,?)",
+    };
+    for (int i = 0; i < strlen(qs); i++) {
+	    if( mysql_stmt_prepare(stmt[i],qs[i],strlen(qs[i])) )
+            goto Error_SqlCall_close;
+    }
+    
 	/* exec sql begin transaction; */
 
 	printf("TPCC Data Load Started...\n");
-
 	if(particle_flg==0){
 	    LoadItems();
 	    LoadWare();
@@ -281,7 +263,7 @@ main(argc, argv)
 
 	/* EXEC SQL COMMIT WORK; */
 
-	if( mysql_commit(mysql) ) goto Error_SqlCall;
+	//if( mysql_commit(mysql) ) goto Error_SqlCall;
 
 	for( i=0; i<11; i++ ){
 	    mysql_stmt_close(stmt[i]);
@@ -325,6 +307,7 @@ LoadItems()
 	/* EXEC SQL WHENEVER SQLERROR GOTO sqlerr; */
 
 	printf("Loading Item \n");
+	mysql_query(mysql, "BEGIN");
 
 	for (i = 0; i < MAXITEMS / 10; i++)
 		orig[i] = 0;
@@ -441,6 +424,7 @@ LoadWare()
 	/* EXEC SQL WHENEVER SQLERROR GOTO sqlerr; */
 
 	printf("Loading Warehouse \n");
+	mysql_query(mysql, "BEGIN");
     w_id = min_ware;
 retry:
     if (retried)
@@ -524,6 +508,7 @@ LoadCust()
 
 	/* EXEC SQL WHENEVER SQLERROR GOTO sqlerr; */
 
+	mysql_query(mysql, "BEGIN");
 	for (w_id = min_ware; w_id <= max_ware; w_id++)
 		for (d_id = 1L; d_id <= DIST_PER_WARE; d_id++)
 			Customer(d_id, w_id);
@@ -553,6 +538,7 @@ LoadOrd()
 
 	/* EXEC SQL WHENEVER SQLERROR GOTO sqlerr;*/
 
+	mysql_query(mysql, "BEGIN");
 	for (w_id = min_ware; w_id <= max_ware; w_id++)
 		for (d_id = 1L; d_id <= DIST_PER_WARE; d_id++)
 			Orders(d_id, w_id);
@@ -602,6 +588,7 @@ Stock(w_id)
 
 	/* EXEC SQL WHENEVER SQLERROR GOTO sqlerr;*/
 	printf("Loading Stock Wid=%ld\n", w_id);
+	mysql_query(mysql, "BEGIN");
 	s_w_id = w_id;
 
 	for (i = 0; i < MAXITEMS / 10; i++)
@@ -745,6 +732,7 @@ District(w_id)
 	/* EXEC SQL WHENEVER SQLERROR GOTO sqlerr;*/
 
 	printf("Loading District\n");
+	mysql_query(mysql, "BEGIN");
 	d_w_id = w_id;
 	d_ytd = 30000.0;
 	d_next_o_id = 3001L;
@@ -851,6 +839,7 @@ Customer(d_id, w_id)
 	/*EXEC SQL WHENEVER SQLERROR GOTO sqlerr;*/
 
 	printf("Loading Customer for DID=%ld, WID=%ld\n", d_id, w_id);
+	mysql_query(mysql, "BEGIN");
 
 retry:
     if (retried)
@@ -1037,6 +1026,7 @@ Orders(d_id, w_id)
 	/* EXEC SQL WHENEVER SQLERROR GOTO sqlerr; */
 
 	printf("Loading Orders for D=%ld, W= %ld\n", d_id, w_id);
+	mysql_query(mysql, "BEGIN");
 	o_d_id = d_id;
 	o_w_id = w_id;
 retry:

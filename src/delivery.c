@@ -45,6 +45,7 @@ int delivery( int t_num,
 	/* printf("W: %d\n", w_id); */
 
 	for (d_id = 1; d_id <= DIST_PER_WARE; d_id++) {
+        mysql_query(ctx[t_num],"BEGIN");
 	        proceed = 1;
 		/*EXEC_SQL SELECT COALESCE(MIN(no_o_id),0) INTO :no_o_id
 		                FROM new_orders
