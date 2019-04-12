@@ -320,8 +320,8 @@ retry:
     if (retried)
         printf("Retrying ...\n");
     retried = 1;
+    mysql_query(mysql, "BEGIN");
 	for (i_id = 1; i_id <= MAXITEMS; i_id++) {
-        mysql_query(mysql, "BEGIN");
 		/* Generate Item Data */
 		i_im_id = RandomNumber(1L, 10000L);
 
