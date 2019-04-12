@@ -1,3 +1,5 @@
 *.o
+*.out
+result/*
 tpcc_load
 tpcc_start

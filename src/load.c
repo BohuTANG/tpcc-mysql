@@ -228,7 +228,7 @@ main(argc, argv)
        "INSERT INTO order_line(ol_o_id, ol_d_id, ol_w_id, ol_number, ol_i_id, ol_supply_w_id, ol_delivery_d, ol_quantity, ol_amount, ol_dist_info ) values(?,?,?,?,?,?, NULL,?,?,?)",
        "INSERT INTO order_line(ol_o_id, ol_d_id, ol_w_id, ol_number, ol_i_id, ol_supply_w_id, ol_delivery_d, ol_quantity, ol_amount, ol_dist_info ) values(?,?,?,?,?,?,?,?,?,?)",
     };
-    for (int i = 0; i < strlen(qs); i++) {
+    for (int i = 0; i < 11; i++) {
 	    if( mysql_stmt_prepare(stmt[i],qs[i],strlen(qs[i])) )
             goto Error_SqlCall_close;
     }
@@ -307,7 +307,6 @@ LoadItems()
 	/* EXEC SQL WHENEVER SQLERROR GOTO sqlerr; */
 
 	printf("Loading Item \n");
-	mysql_query(mysql, "BEGIN");
 
 	for (i = 0; i < MAXITEMS / 10; i++)
 		orig[i] = 0;
@@ -322,7 +321,7 @@ retry:
         printf("Retrying ...\n");
     retried = 1;
 	for (i_id = 1; i_id <= MAXITEMS; i_id++) {
-
+        mysql_query(mysql, "BEGIN");
 		/* Generate Item Data */
 		i_im_id = RandomNumber(1L, 10000L);
 
@@ -424,7 +423,6 @@ LoadWare()
 	/* EXEC SQL WHENEVER SQLERROR GOTO sqlerr; */
 
 	printf("Loading Warehouse \n");
-	mysql_query(mysql, "BEGIN");
     w_id = min_ware;
 retry:
     if (retried)
@@ -433,8 +431,9 @@ retry:
 	for (; w_id <= max_ware; w_id++) {
 
 		/* Generate Warehouse Data */
+	    mysql_query(mysql, "BEGIN");
 
-                w_name[ MakeAlphaString(6, 10, w_name) ] = 0;
+        w_name[ MakeAlphaString(6, 10, w_name) ] = 0;
 
 		MakeAddress(w_street_1, w_street_2, w_city, w_state, w_zip);
 
