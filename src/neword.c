@@ -489,8 +489,9 @@ int neword( int t_num,
 		param[7].buffer_type = MYSQL_TYPE_FLOAT;
 		param[7].buffer = &ol_amount;
 		param[8].buffer_type = MYSQL_TYPE_STRING;
-		param[8].buffer = ol_dist_info;
-		param[8].buffer_length = strlen(ol_dist_info);
+		char *ol_dist_info1 ="1111";
+		param[8].buffer = ol_dist_info1;
+		param[8].buffer_length = strlen(ol_dist_info1);
 		if( mysql_stmt_bind_param(mysql_stmt, param) ) goto sqlerr;
 		if( mysql_stmt_execute(mysql_stmt) ) goto sqlerr;
 
