@@ -46,38 +46,38 @@ int delivery( int t_num,
 
 	for (d_id = 1; d_id <= DIST_PER_WARE; d_id++) {
         mysql_query(ctx[t_num],"BEGIN");
-	        proceed = 1;
-		/*EXEC_SQL SELECT COALESCE(MIN(no_o_id),0) INTO :no_o_id
-		                FROM new_orders
-		                WHERE no_d_id = :d_id AND no_w_id = :w_id;*/
-		mysql_stmt = stmt[t_num][25];
-
-		memset(param, 0, sizeof(MYSQL_BIND) * 2); /* initialize */
-		param[0].buffer_type = MYSQL_TYPE_LONG;
-		param[0].buffer = &d_id;
-		param[1].buffer_type = MYSQL_TYPE_LONG;
-		param[1].buffer = &w_id;
-		if( mysql_stmt_bind_param(mysql_stmt, param) ) goto sqlerr;
-		if( mysql_stmt_execute(mysql_stmt) ) goto sqlerr;
-
-		if( mysql_stmt_store_result(mysql_stmt) ) goto sqlerr;
-		memset(column, 0, sizeof(MYSQL_BIND) * 1); /* initialize */
-		column[0].buffer_type = MYSQL_TYPE_LONG;
-                column[0].buffer = &no_o_id;
-		if( mysql_stmt_bind_result(mysql_stmt, column) ) goto sqlerr;
-                switch( mysql_stmt_fetch(mysql_stmt) ) {
-                    case 0: //SUCCESS
-                        break;
-                    case 1: //ERROR
-                    case MYSQL_NO_DATA: //NO MORE DATA
-                    default:
-                        mysql_stmt_free_result(mysql_stmt);
-                        goto sqlerr;
-                }
-                mysql_stmt_free_result(mysql_stmt);
-
-
-		if(no_o_id == 0) continue;
+//	        proceed = 1;
+//		/*EXEC_SQL SELECT COALESCE(MIN(no_o_id),0) INTO :no_o_id
+//		                FROM new_orders
+//		                WHERE no_d_id = :d_id AND no_w_id = :w_id;*/
+//		mysql_stmt = stmt[t_num][25];
+//
+//		memset(param, 0, sizeof(MYSQL_BIND) * 2); /* initialize */
+//		param[0].buffer_type = MYSQL_TYPE_LONG;
+//		param[0].buffer = &d_id;
+//		param[1].buffer_type = MYSQL_TYPE_LONG;
+//		param[1].buffer = &w_id;
+//		if( mysql_stmt_bind_param(mysql_stmt, param) ) goto sqlerr;
+//		if( mysql_stmt_execute(mysql_stmt) ) goto sqlerr;
+//
+//		if( mysql_stmt_store_result(mysql_stmt) ) goto sqlerr;
+//		memset(column, 0, sizeof(MYSQL_BIND) * 1); /* initialize */
+//		column[0].buffer_type = MYSQL_TYPE_LONG;
+//                column[0].buffer = &no_o_id;
+//		if( mysql_stmt_bind_result(mysql_stmt, column) ) goto sqlerr;
+//                switch( mysql_stmt_fetch(mysql_stmt) ) {
+//                    case 0: //SUCCESS
+//                        break;
+//                    case 1: //ERROR
+//                    case MYSQL_NO_DATA: //NO MORE DATA
+//                    default:
+//                        mysql_stmt_free_result(mysql_stmt);
+//                        goto sqlerr;
+//                }
+//                mysql_stmt_free_result(mysql_stmt);
+//
+//
+//		if(no_o_id == 0) continue;
 		proceed = 2;
 		/*EXEC_SQL DELETE FROM new_orders WHERE no_o_id = :no_o_id AND no_d_id = :d_id
 		  AND no_w_id = :w_id;*/
@@ -118,8 +118,9 @@ int delivery( int t_num,
                 switch( mysql_stmt_fetch(mysql_stmt) ) {
                     case 0: //SUCCESS
                         break;
-                    case 1: //ERROR
                     case MYSQL_NO_DATA: //NO MORE DATA
+                        break;
+                    case 1: //ERROR
                     default:
                         mysql_stmt_free_result(mysql_stmt);
                         goto sqlerr;
