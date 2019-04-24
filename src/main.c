@@ -122,7 +122,7 @@ int main( int argc, char *argv[] )
   float f;
   pthread_t *t;
   thread_arg *thd_arg;
-  timer_t timer;
+  time_t timer;
   struct itimerval itval;
   struct sigaction  sigact;
   int port= 3306;
@@ -777,7 +777,7 @@ int thread_main (thread_arg* arg)
   if( mysql_stmt_prepare(stmt[t_num][3], "INSERT IGNORE INTO orders (o_id, o_d_id, o_w_id, o_c_id, o_entry_d, o_ol_cnt, o_all_local) VALUES(?, ?, ?, ?, ?, ?, ?)", 118) ) goto sqlerr;
   if( mysql_stmt_prepare(stmt[t_num][4], "INSERT IGNORE INTO new_orders (no_o_id, no_d_id, no_w_id) VALUES (?,?,?)", 72) ) goto sqlerr;
   if( mysql_stmt_prepare(stmt[t_num][5], "SELECT i_price, i_name, i_data FROM item WHERE i_id = ?", 55) ) goto sqlerr;
-  if( mysql_stmt_prepare(stmt[t_num][6], "SELECT s_quantity, s_data, s_dist_01, s_dist_02, s_dist_03, s_dist_04, s_dist_05, s_dist_06, s_dist_07, s_dist_08, s_dist_09, s_dist_10 FROM stock WHERE s_i_id = ? AND s_w_id = ? FOR UPDATE", 189) ) goto sqlerr;
+  if( mysql_stmt_prepare(stmt[t_num][6], "SELECT s_quantity, s_data, s_dist_01, s_dist_02, s_dist_03, s_dist_04, s_dist_05, s_dist_06, s_dist_07, s_dist_08, s_dist_09, s_dist_10 FROM stock WHERE s_i_id = ? AND s_w_id = ? FOR UPDATE", 189) ) goto sqlerr;// FOR UPDATE lock
   if( mysql_stmt_prepare(stmt[t_num][7], "UPDATE stock SET s_quantity = ? WHERE s_i_id = ? AND s_w_id = ?", 63) ) goto sqlerr;
   if( mysql_stmt_prepare(stmt[t_num][8], "INSERT IGNORE INTO order_line (ol_o_id, ol_d_id, ol_w_id, ol_number, ol_i_id, ol_supply_w_id, ol_quantity, ol_amount, ol_dist_info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 166) ) goto sqlerr;
   if( mysql_stmt_prepare(stmt[t_num][9], "UPDATE warehouse SET w_ytd = w_ytd + ? WHERE w_id = ?", 53) ) goto sqlerr;
@@ -796,7 +796,7 @@ int thread_main (thread_arg* arg)
   if( mysql_stmt_prepare(stmt[t_num][22], "SELECT c_balance, c_first, c_middle, c_last FROM customer WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?", 102) ) goto sqlerr;
   if( mysql_stmt_prepare(stmt[t_num][23], "SELECT o_id, o_entry_d, COALESCE(o_carrier_id,0) FROM orders WHERE o_w_id = ? AND o_d_id = ? AND o_c_id = ?", 107) ) goto sqlerr;
   if( mysql_stmt_prepare(stmt[t_num][24], "SELECT ol_i_id, ol_supply_w_id, ol_quantity, ol_amount, ol_delivery_d FROM order_line WHERE ol_w_id = ? AND ol_d_id = ? AND ol_o_id = ?", 135) ) goto sqlerr;
-  if( mysql_stmt_prepare(stmt[t_num][25], "SELECT no_o_id FROM new_orders WHERE no_d_id = ? AND no_w_id = ?", 64) ) goto sqlerr;
+  if( mysql_stmt_prepare(stmt[t_num][25], "SELECT MIN(no_o_id) FROM new_orders WHERE no_d_id = ? AND no_w_id = ?", 69) ) goto sqlerr;//"SELECT no_o_id FROM new_orders WHERE no_d_id = ? AND no_w_id = ?", 64
   if( mysql_stmt_prepare(stmt[t_num][26], "DELETE FROM new_orders WHERE no_o_id = ? AND no_d_id = ? AND no_w_id = ?", 72) ) goto sqlerr;
   if( mysql_stmt_prepare(stmt[t_num][27], "SELECT o_c_id FROM orders WHERE o_id = ? AND o_d_id = ? AND o_w_id = ?", 70) ) goto sqlerr;
   if( mysql_stmt_prepare(stmt[t_num][28], "UPDATE orders SET o_carrier_id = ? WHERE o_id = ? AND o_d_id = ? AND o_w_id = ?", 79) ) goto sqlerr;
