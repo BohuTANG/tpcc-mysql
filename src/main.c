@@ -122,7 +122,7 @@ int main( int argc, char *argv[] )
   float f;
   pthread_t *t;
   thread_arg *thd_arg;
-  time_t timer;
+  timer_t timer;
   struct itimerval itval;
   struct sigaction  sigact;
   int port= 3306;
