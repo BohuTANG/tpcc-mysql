@@ -60,7 +60,7 @@ int payment( int t_num,
 	char            c_data[502];
 	char            c_new_data[502];
 	float           h_amount = h_amount_arg;
-	char            h_data[26];
+	char            h_data[26] = {'\0'};
 	char            d_name[11];
 	char            d_street_1[21];
 	char            d_street_2[21];
