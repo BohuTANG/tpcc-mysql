@@ -78,7 +78,7 @@ int neword( int t_num,
 	char            s_dist_08[25];
 	char            s_dist_09[25];
 	char            s_dist_10[25];
-	char            ol_dist_info[25];
+	char            ol_dist_info[25] = {'\0'};
 	int            ol_supply_w_id;
 	float           ol_amount;
 	int            ol_number;
@@ -489,9 +489,8 @@ int neword( int t_num,
 		param[7].buffer_type = MYSQL_TYPE_FLOAT;
 		param[7].buffer = &ol_amount;
 		param[8].buffer_type = MYSQL_TYPE_STRING;
-		char *ol_dist_info1 ="1111";
-		param[8].buffer = ol_dist_info1;
-		param[8].buffer_length = strlen(ol_dist_info1);
+		param[8].buffer = ol_dist_info;
+		param[8].buffer_length = strlen(ol_dist_info);
 		if( mysql_stmt_bind_param(mysql_stmt, param) ) goto sqlerr;
 		if( mysql_stmt_execute(mysql_stmt) ) goto sqlerr;
 
